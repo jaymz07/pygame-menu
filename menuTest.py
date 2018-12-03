@@ -22,32 +22,33 @@ GREEN    = (   0, 255,   0)
 RED      = ( 255,   0,   0)
 BLUE     = (   0,   0, 255)
 
-PI = np.pi
-
+#Set window properties
 size = (700, 500)
 screen = pygame.display.set_mode(size)
 
 pygame.display.set_caption("Test")
-
-# Loop until the user clicks the close button.
-done = False
 
 #----------Functions to "do things"-----------
 def f1():
     print("Did a thing!")
 def f2():
     print("Did another thing!")
-
+    
+#----------Configure Menu----------------
 menuEntries = ['Do a Thing', 'Do another thing', 'Do nothing']
 
-inputMenu = Menu( [300,300], menuEntries)
+inputMenu = Menu( [300,300], menuEntries, rightClick = True)
 inputMenu.assignFunction(0,f1)
 inputMenu.assignFunction(1,f2)
  
 # -------- Main Program Loop -----------
+# Loop until the user clicks the close button.
+done = False
 while not done:
     # --- Main event loop
     for event in pygame.event.get(): # User did something
+        
+        #Pass input events to menu
         inputMenu.processMouseInput(event)
         
         if event.type == pygame.QUIT:
@@ -58,6 +59,7 @@ while not done:
     # --- Drawing code should go here
     screen.fill(WHITE)
     
+    #-----Tell menu to draw---------
     inputMenu.draw(screen)
  
  

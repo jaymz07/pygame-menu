@@ -19,10 +19,14 @@ BLUE     = (   0,   0, 255)
 SEPSIZE = 20
 
 class Menu:
-    def __init__(self, loc, entries):
+    def __init__(self, loc, entries, rightClick = False, activated = True):
         self.loc = loc
         self.entries = entries
         self.funcAssignments = [None]*len(entries)
+        
+        self.rightClickBehavior = rightClick
+        
+        self.activated = activated
         
         self.font = pygame.font.SysFont('Calibri', 25, True, False)
         
@@ -32,6 +36,10 @@ class Menu:
         self.width = 200
     
     def draw(self, screen):
+        
+        if(not self.activated):
+            return
+        
         N = len(self.entries)
         
         pygame.draw.rect(screen, BLACK, [self.loc[0], self.loc[1] - 2, self.width, SEPSIZE*N], 2)
@@ -59,7 +67,7 @@ class Menu:
             self.selectedIndex = self.getMenuIndex(pygame.mouse.get_pos())
             
         elif(event.type == pygame.MOUSEBUTTONDOWN):
-            if(event.button == 1):
+            if(event.button == 1 and self.activated):
                 index = self.getMenuIndex(pygame.mouse.get_pos())
                 if(index is not None):
                     self.clickedIndex  = index
@@ -71,6 +79,10 @@ class Menu:
                 else:
                     self.clickedIndex  = None
                     self.selectedIndex = None
+            elif(event.button == 3):
+                if(self.rightClickBehavior):
+                    self.activated = True
+                    self.loc = pygame.mouse.get_pos()
         
         elif(event.type == pygame.MOUSEBUTTONUP):
             if(event.button == 1):
@@ -81,6 +93,11 @@ class Menu:
                 else:
                     self.clickedIndex  = None
                     self.selectedIndex = None
+        
+        elif(event.type == pygame.KEYDOWN):
+            if(self.rightClickBehavior):
+                if(event.unicode == '\x1b'):
+                    self.activated = False
                     
     def assignFunction(self,menuIndex, func):
         self.funcAssignments[menuIndex] = func
